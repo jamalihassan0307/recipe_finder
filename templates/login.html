@@ -3,7 +3,14 @@
 {% block title %}Recipe Hub - Login{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/Login.css' %}">
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/App.css' %}">
+<link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/AddRecipe.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/Login.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/Profile.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/RecipeDetail.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -33,9 +40,7 @@
             <button type="submit" class="login-button">Sign In</button>
         </form>
         
-        <div class="form-footer">
-            <p>Don't have an account? <a href="{% url 'register' %}" class="signup-link">Sign up</a></p>
-        </div>
+      
     </div>
 </div>
 {% endblock %}
