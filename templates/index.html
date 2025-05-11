@@ -12,18 +12,18 @@
         <div class="hero-content">
             <h1>Discover Delicious Recipes</h1>
             <p>Find and share your favorite recipes with our community</p>
-            <div class="search-bar">
-                <input type="text" placeholder="Search for recipes..." id="searchInput">
-                <button class="search-button">
+            <form action="{% url 'home' %}" method="get" class="search-bar">
+                <input type="text" name="search" placeholder="Search for recipes..." value="{{ request.GET.search }}">
+                <button type="submit" class="search-button">
                     <i class="fas fa-search"></i>
                 </button>
-            </div>
+            </form>
         </div>
     </div>
 
     <div class="featured-recipes">
         <h2>Featured Recipes</h2>
-        <div class="recipe-grid" id="recipeGrid">
+        <div class="recipe-grid">
             {% for recipe in recipes %}
             <div class="recipe-card">
                 <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" class="recipe-image">
@@ -36,6 +36,10 @@
                     </div>
                     <a href="{% url 'recipe_detail' recipe.id %}" class="view-recipe-btn">View Recipe</a>
                 </div>
+            </div>
+            {% empty %}
+            <div class="no-recipes">
+                <p>No recipes found</p>
             </div>
             {% endfor %}
         </div>
