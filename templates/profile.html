@@ -10,13 +10,14 @@
 <div class="profile-container">
     <div class="profile-header">
         <div class="profile-avatar">
-            <img src="{{ user.profile_picture|default:'/static/assets/default-profile.png' }}" alt="Profile Picture" id="profilePicture">
-            <div class="avatar-upload">
-                <label for="avatarInput" class="upload-button">
+            <img src="{{ user.profile_picture.url|default:'/static/assets/default-profile.png' }}" alt="Profile Picture">
+            <form method="post" enctype="multipart/form-data" action="{% url 'update_profile_picture' %}" class="avatar-upload">
+                {% csrf_token %}
+                <label for="profile_picture" class="upload-button">
                     <i class="fas fa-camera"></i>
                 </label>
-                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
-            </div>
+                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;" onchange="this.form.submit()">
+            </form>
         </div>
         <div class="profile-info">
             <h1>{{ user.username }}</h1>
@@ -28,7 +29,7 @@
     <div class="profile-content">
         <div class="profile-section">
             <h2>Account Settings</h2>
-            <form method="post" class="profile-form">
+            <form method="post" action="{% url 'update_profile' %}" class="profile-form">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="username">Username</label>
@@ -44,7 +45,7 @@
 
         <div class="profile-section">
             <h2>Change Password</h2>
-            <form method="post" class="password-form">
+            <form method="post" action="{% url 'change_password' %}" class="password-form">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="current_password">Current Password</label>
@@ -63,8 +64,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/profile.js' %}"></script>
 {% endblock %} 
