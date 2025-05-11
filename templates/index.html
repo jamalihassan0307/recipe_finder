@@ -1,53 +1,61 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Recipe Hub - Home{% endblock %}
+{% block title %}Recipe Hub{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/Home.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/Recipes.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="home-container">
-    <div class="hero-section">
-        <div class="hero-content">
-            <h1>Discover Delicious Recipes</h1>
-            <p>Find and share your favorite recipes with our community</p>
-            <form action="{% url 'home' %}" method="get" class="search-bar">
-                <input type="text" name="search" placeholder="Search for recipes..." value="{{ request.GET.search }}">
-                <button type="submit" class="search-button">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
+<div class="recipes-page">
+    <div class="recipes-hero">
+        <div class="recipes-hero-content">
+            <h1>Our Recipe Collection</h1>
+            <p>Discover a world of flavors curated by expert chefs and food enthusiasts</p>
         </div>
     </div>
 
-    <div class="featured-recipes">
-        <h2>Featured Recipes</h2>
-        <div class="recipe-grid">
+    <div class="recipes-filters">
+        <div class="filter-container">
+            <div class="filter-tags">
+                <span class="filter-tag active">All</span>
+                <span class="filter-tag">Popular</span>
+                <span class="filter-tag">Recent</span>
+                <span class="filter-tag">Trending</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="recipes-main">
+        <div class="recipes-grid">
             {% for recipe in recipes %}
             <div class="recipe-card">
-                <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" class="recipe-image">
-                <div class="recipe-info">
+                <div class="recipe-image-container">
+                    <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}">
+                    <div class="recipe-overlay">
+                        <span class="social-rank">
+                            ⭐ {{ recipe.social_rank|floatformat:0 }}
+                        </span>
+                    </div>
+                </div>
+                <div class="recipe-content">
                     <h3>{{ recipe.title }}</h3>
                     <p class="publisher">By {{ recipe.publisher.publisher_name }}</p>
-                    <div class="recipe-meta">
-                        <span><i class="fas fa-clock"></i> {{ recipe.cooking_time }} mins</span>
-                        <span><i class="fas fa-star"></i> {{ recipe.social_rank }}</span>
+                    <div class="recipe-card-actions">
+                        <a href="{{ recipe.source_url }}" target="_blank" rel="noopener noreferrer" class="view-recipe-btn">
+                            View Recipe
+                        </a>
+                        <a href="{% url 'recipe_detail' recipe.id %}" class="view-details-btn">
+                            View Details
+                        </a>
                     </div>
-                    <a href="{% url 'recipe_detail' recipe.id %}" class="view-recipe-btn">View Recipe</a>
                 </div>
             </div>
             {% empty %}
-            <div class="no-recipes">
-                <p>No recipes found</p>
-            </div>
+            <div class="no-results">No recipes found</div>
             {% endfor %}
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/recipes.js' %}"></script>
 {% endblock %} 

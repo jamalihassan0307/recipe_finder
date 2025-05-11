@@ -9,8 +9,9 @@
     <link rel="stylesheet" href="{% static 'css/common.css' %}">
     <link rel="stylesheet" href="{% static 'css/App.css' %}">
     <link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
-    {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/pages/Recipes.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <nav class="navbar">
@@ -33,12 +34,14 @@
                 <span class="nav-icon">📞</span>
                 <span>Contact</span>
             </a>
-            <form action="{% url 'home' %}" method="get" class="search-container">
-                <input type="text" name="search" placeholder="Search recipes..." class="nav-search-input">
-                <button type="submit" class="search-toggle">
-                    <span class="nav-icon">🔍</span>
-                </button>
-            </form>
+            <div class="search-container">
+                <form action="{% url 'home' %}" method="get">
+                    <input type="text" name="search" placeholder="Search recipes..." class="nav-search-input" value="{{ request.GET.search }}">
+                    <button type="submit" class="search-toggle">
+                        <span class="nav-icon">🔍</span>
+                    </button>
+                </form>
+            </div>
             {% if user.is_authenticated %}
                 <div class="user-profile">
                     <img src="{{ user.profile_picture.url|default:'/static/assets/default-profile.png' }}" alt="Profile" class="profile-picture">
@@ -66,7 +69,6 @@
             {% endif %}
         </div>
     </nav>
-
     {% if messages %}
     <div class="messages">
         {% for message in messages %}
@@ -76,7 +78,7 @@
         {% endfor %}
     </div>
     {% endif %}
-
     {% block content %}{% endblock %}
+    {% block extra_js %}{% endblock %}
 </body>
 </html> 
