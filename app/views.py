@@ -114,3 +114,45 @@ def save_recipe(request, recipe_id):
             user.saved_recipes.add(recipe)
             messages.success(request, 'Recipe saved successfully!')
     return redirect('recipe_detail', recipe_id=recipe_id)
+
+@login_required
+def add_recipe(request):
+    if request.method == 'POST':
+        try:
+            # Create or get publisher
+            publisher_name = request.POST.get('publisher_name')
+            publisher_url = request.POST.get('publisher_url')
+            publisher, created = Publisher.objects.get_or_create(
+                publisher_name=publisher_name,
+                defaults={'publisher_url': publisher_url}
+            )
+
+            # Create recipe
+            recipe = Recipe.objects.create(
+                title=request.POST.get('title'),
+                description=request.POST.get('description'),
+                source_url=request.POST.get('source_url'),
+                image_url=request.POST.get('image_url'),
+                cooking_time=int(request.POST.get('cooking_time', 0)),
+                social_rank=float(request.POST.get('social_rank', 0)),
+                publisher=publisher,
+                created_by=request.user
+            )
+
+            # Create recipe methods
+            methods = request.POST.get('recipe_methods', '').split('\n')
+            for i, method in enumerate(methods, 1):
+                if method.strip():
+                    RecipeMethod.objects.create(
+                        recipe=recipe,
+                        step_number=i,
+                        description=method.strip()
+                    )
+
+            messages.success(request, 'Recipe added successfully!')
+            return redirect('recipe_detail', recipe_id=recipe.id)
+        except Exception as e:
+            messages.error(request, f'Error adding recipe: {str(e)}')
+            return redirect('add_recipe')
+
+    return render(request, 'add-recipe.html')
