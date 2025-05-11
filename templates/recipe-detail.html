@@ -50,17 +50,39 @@
 
     <div class="recipe-footer">
         <div class="recipe-actions">
-            <button class="action-button" id="saveRecipe">
-                <i class="fas fa-bookmark"></i> Save Recipe
-            </button>
-            <button class="action-button" id="shareRecipe">
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'save_recipe' recipe.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="action-button">
+                        <i class="fas fa-bookmark"></i> Save Recipe
+                    </button>
+                </form>
+            {% endif %}
+            <button class="action-button" onclick="shareRecipe()">
                 <i class="fas fa-share-alt"></i> Share
             </button>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
-<script src="{% static 'js/recipe-detail.js' %}"></script>
+<script>
+function shareRecipe() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ recipe.title }}',
+            text: 'Check out this recipe!',
+            url: window.location.href
+        }).catch(console.error);
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        const tempInput = document.createElement('input');
+        tempInput.value = window.location.href;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        alert('Recipe URL copied to clipboard!');
+    }
+}
+</script>
 {% endblock %} 
