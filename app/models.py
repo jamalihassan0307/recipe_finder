@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager as DjangoUserManager
 
 class Role(models.Model):
     role_name = models.CharField(max_length=100)
@@ -7,9 +7,24 @@ class Role(models.Model):
     def __str__(self):
         return self.role_name
 
+class CustomUserManager(DjangoUserManager):
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        if 'role' not in extra_fields or not extra_fields['role']:
+            role, _ = Role.objects.get_or_create(role_name='user')
+            extra_fields['role'] = role
+        return super().create_user(username, email, password, **extra_fields)
+
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
+        if 'role' not in extra_fields or not extra_fields['role']:
+            role, _ = Role.objects.get_or_create(role_name='admin')
+            extra_fields['role'] = role
+        return super().create_superuser(username, email, password, **extra_fields)
+
 class User(AbstractUser):
     profile_picture = models.CharField(max_length=255, null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
+
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.username
