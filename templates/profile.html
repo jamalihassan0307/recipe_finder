@@ -17,7 +17,7 @@
 <div class="profile-container">
     <div class="profile-header">
         <div class="profile-avatar">
-            <img src="{{ user.profile_picture.url|default:'/static/assets/default-profile.png' }}" alt="Profile Picture">
+            <img src="{{ user.profile_picture_url }}" alt="Profile Picture">
             <form method="post" enctype="multipart/form-data" action="{% url 'update_profile_picture' %}" class="avatar-upload">
                 {% csrf_token %}
                 <label for="profile_picture" class="upload-button">
@@ -27,7 +27,7 @@
             </form>
         </div>
         <div class="profile-info">
-            <h1>{{ user.username }}</h1>
+            <h1>{{ user.first_name|default:user.username }}</h1>
             <p class="user-email">{{ user.email }}</p>
             <p class="user-role">{{ user.role.role_name }}</p>
         </div>
@@ -43,7 +43,15 @@
                     <input type="text" id="username" name="username" value="{{ user.username }}" required>
                 </div>
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label for="first_name">First name</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last name</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email address</label>
                     <input type="email" id="email" name="email" value="{{ user.email }}" required>
                 </div>
                 <button type="submit" class="save-button">Save Changes</button>

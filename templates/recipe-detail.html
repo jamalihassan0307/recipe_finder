@@ -22,12 +22,12 @@
         <div class="recipe-info">
             <h1>{{ recipe.title }}</h1>
             <div class="recipe-meta">
-                <span class="publisher">By {{ recipe.publisher.publisher_name }}</span>
+                <span class="publisher">By <a href="{{ recipe.publisher.publisher_url }}" target="_blank">{{ recipe.publisher.publisher_name }}</a></span>
                 <span class="cooking-time"><i class="fas fa-clock"></i> {{ recipe.cooking_time }} mins</span>
                 <span class="social-rank"><i class="fas fa-star"></i> {{ recipe.social_rank }}</span>
             </div>
             <div class="recipe-description">
-                <p>{{ recipe.description }}</p>
+                <p>Recipe by {{ recipe.created_by.first_name|default:recipe.created_by.username }}</p>
             </div>
         </div>
     </div>
@@ -45,31 +45,17 @@
         <div class="instructions-section">
             <h2>Instructions</h2>
             <ol class="instructions-list">
-                {% for method in recipe.recipe_methods.all %}
+                {% for method in methods %}
                 <li>
-                    <div class="step-number">{{ method.step_number }}</div>
-                    <div class="step-content">{{ method.description }}</div>
+                    <div class="step-number">Step {{ method.step_number }}</div>
+                    <div class="step-content">{{ method.instruction }}</div>
                 </li>
                 {% endfor %}
             </ol>
         </div>
     </div>
 
-    <div class="recipe-footer">
-        <div class="recipe-actions">
-            {% if user.is_authenticated %}
-                <form method="post" action="{% url 'save_recipe' recipe.id %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="action-button">
-                        <i class="fas fa-bookmark"></i> Save Recipe
-                    </button>
-                </form>
-            {% endif %}
-            <button class="action-button" onclick="shareRecipe()">
-                <i class="fas fa-share-alt"></i> Share
-            </button>
-        </div>
-    </div>
+   
 </div>
 
 <script>
