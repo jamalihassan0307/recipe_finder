@@ -46,14 +46,11 @@
             </div>
             {% if user.is_authenticated %}
                 <div class="user-profile">
-                    <img src="{{ user.profile_picture.url|default:'/static/assets/default-profile.png' }}" alt="Profile" class="profile-picture">
-                    <span class="username">{{ user.username }}</span>
+                    <img src="{{ user.profile_picture_url }}" alt="Profile" class="profile-picture">
+                    <span class="username">{{ user.first_name|default:user.username }}</span>
                     <div class="profile-dropdown">
                         <a href="{% url 'profile' %}" class="dropdown-item">
                             <i class="fas fa-user"></i> Profile
-                        </a>
-                        <a href="{% url 'add_recipe' %}" class="dropdown-item">
-                            <i class="fas fa-plus"></i> Add Recipe
                         </a>
                         <form action="{% url 'logout' %}" method="post" style="display: inline;">
                             {% csrf_token %}
