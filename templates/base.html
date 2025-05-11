@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Recipe Hub{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/common.css' %}">
+    <link rel="stylesheet" href="{% static 'css/App.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
+    {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="{% url 'home' %}">
+                <span class="brand-icon">🍳</span>
+                <span class="brand-text">Recipe Hub</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'home' %}" class="nav-link">
+                <span class="nav-icon">🏠</span>
+                <span>Home</span>
+            </a>
+            <a href="{% url 'about' %}" class="nav-link">
+                <span class="nav-icon">ℹ️</span>
+                <span>About</span>
+            </a>
+            <a href="{% url 'contact' %}" class="nav-link">
+                <span class="nav-icon">📞</span>
+                <span>Contact</span>
+            </a>
+            <div class="search-container">
+                <button class="search-toggle">
+                    <span class="nav-icon">🔍</span>
+                </button>
+                <input type="text" placeholder="Search recipes..." class="nav-search-input">
+            </div>
+            {% if user.is_authenticated %}
+                <div class="user-profile">
+                    <img src="{{ user.profile_picture|default:'/static/assets/default-profile.png' }}" alt="Profile" class="profile-picture" id="navProfilePicture">
+                    <span class="username" id="navUsername">{{ user.username }}</span>
+                    <div class="profile-dropdown">
+                        <a href="{% url 'profile' %}" class="dropdown-item">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                        <a href="{% url 'logout' %}" class="dropdown-item" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{% url 'login' %}" class="login-button">
+                    <span class="nav-icon">👤</span>
+                    Login
+                </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    {% block extra_js %}{% endblock %}
+    <script src="{% static 'js/api.js' %}"></script>
+    <script src="{% static 'js/navbar.js' %}"></script>
+</body>
+</html> 

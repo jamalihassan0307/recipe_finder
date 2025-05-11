@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Detail - Recipe Hub</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/App.css">
+    <link rel="stylesheet" href="../css/components/NavBar.css">
+    <link rel="stylesheet" href="../css/pages/RecipeDetail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html">
+                <span class="brand-icon">🍳</span>
+                <span class="brand-text">Recipe Hub</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">
+                <span class="nav-icon">🏠</span>
+                <span>Home</span>
+            </a>
+            <a href="about.html" class="nav-link">
+                <span class="nav-icon">ℹ️</span>
+                <span>About</span>
+            </a>
+            <a href="contact.html" class="nav-link">
+                <span class="nav-icon">📞</span>
+                <span>Contact</span>
+            </a>
+            <div class="search-container">
+                <button class="search-toggle">
+                    <span class="nav-icon">🔍</span>
+                </button>
+                <input type="text" placeholder="Search recipes..." class="nav-search-input">
+            </div>
+            <a href="login.html" class="login-button">
+                <span class="nav-icon">👤</span>
+                Login
+            </a>
+        </div>
+    </nav>
+
+    <div class="recipe-detail-page">
+        <div class="recipe-detail-hero">
+            <img src="" alt="" class="hero-image" id="recipeImage">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 id="recipeTitle"></h1>
+                <div class="recipe-badges">
+                    <span class="badge">
+                        <i class="fas fa-star"></i>
+                        <span id="socialRank"></span>
+                    </span>
+                    <span class="badge">
+                        <i class="fas fa-clock"></i>
+                        30 mins
+                    </span>
+                    <span class="badge">
+                        <i class="fas fa-user-friends"></i>
+                        4 servings
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="recipe-detail-content">
+            <div class="recipe-info-grid">
+                <div class="recipe-main-info">
+                    <div class="info-card publisher-card">
+                        <h2>Publisher Information</h2>
+                        <div class="publisher-details">
+                            <img src="" alt="" class="publisher-logo" id="publisherLogo">
+                            <div>
+                                <h3 id="publisherName"></h3>
+                                <a href="" target="_blank" rel="noopener noreferrer" class="publisher-link" id="publisherLink">
+                                    Visit Publisher Website
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card ingredients-card">
+                        <h2>Key Ingredients</h2>
+                        <div class="ingredients-grid">
+                            <div class="ingredient-item">
+                                <span class="ingredient-icon">🥘</span>
+                                <span>Ingredient 1</span>
+                            </div>
+                            <div class="ingredient-item">
+                                <span class="ingredient-icon">🥘</span>
+                                <span>Ingredient 2</span>
+                            </div>
+                            <div class="ingredient-item">
+                                <span class="ingredient-icon">🥘</span>
+                                <span>Ingredient 3</span>
+                            </div>
+                            <div class="ingredient-item">
+                                <span class="ingredient-icon">🥘</span>
+                                <span>Ingredient 4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recipe-actions">
+                    <a href="" target="_blank" rel="noopener noreferrer" class="action-button primary" id="sourceUrl">
+                        <i class="fas fa-external-link-alt"></i>
+                        View Full Recipe
+                    </a>
+                    <button onclick="window.location.href='index.html'" class="action-button secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Recipes
+                    </button>
+                </div>
+            </div>
+
+            <div class="recipe-share">
+                <h3>Share this Recipe</h3>
+                <div class="share-buttons">
+                    <button class="share-button facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button class="share-button twitter">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="share-button pinterest">
+                        <i class="fab fa-pinterest-p"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/navbar.js"></script>
+    <script src="../js/recipe-detail.js"></script>
+</body>
+</html> 

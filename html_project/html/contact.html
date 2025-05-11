@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Recipe Hub</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/App.css">
+    <link rel="stylesheet" href="../css/components/NavBar.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html">
+                <span class="brand-icon">🍳</span>
+                <span class="brand-text">Recipe Hub</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">
+                <span class="nav-icon">🏠</span>
+                <span>Home</span>
+            </a>
+            <a href="about.html" class="nav-link">
+                <span class="nav-icon">ℹ️</span>
+                <span>About</span>
+            </a>
+            <a href="contact.html" class="nav-link">
+                <span class="nav-icon">📞</span>
+                <span>Contact</span>
+            </a>
+            <div class="search-container">
+                <button class="search-toggle">
+                    <span class="nav-icon">🔍</span>
+                </button>
+                <input type="text" placeholder="Search recipes..." class="nav-search-input">
+            </div>
+            <a href="login.html" class="login-button">
+                <span class="nav-icon">👤</span>
+                Login
+            </a>
+        </div>
+    </nav>
+
+    <div class="contact-page">
+        <div class="contact-content">
+            <h1>Contact Us</h1>
+            <div class="contact-cards">
+                <div class="contact-card" onclick="window.location.href='mailto:awaiskamal848@gmail.com'">
+                    <div class="contact-icon">✉️</div>
+                    <h3>Email Us</h3>
+                    <p>awaiskamal848@gmail.com</p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">📞</div>
+                    <h3>Call Us</h3>
+                    <p>+92325 8658817</p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">📍</div>
+                    <h3>Visit Us</h3>
+                    <p>University chock<br>bahawalpur City, pakistan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/navbar.js"></script>
+</body>
+</html> 

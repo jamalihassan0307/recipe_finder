@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ recipe.title }} - Recipe Hub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/RecipeDetail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="recipe-detail-container">
+    <div class="recipe-header">
+        <div class="recipe-image">
+            <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}">
+        </div>
+        <div class="recipe-info">
+            <h1>{{ recipe.title }}</h1>
+            <div class="recipe-meta">
+                <span class="publisher">By {{ recipe.publisher.publisher_name }}</span>
+                <span class="cooking-time"><i class="fas fa-clock"></i> {{ recipe.cooking_time }} mins</span>
+                <span class="social-rank"><i class="fas fa-star"></i> {{ recipe.social_rank }}</span>
+            </div>
+            <div class="recipe-description">
+                <p>{{ recipe.description }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="recipe-content">
+        <div class="ingredients-section">
+            <h2>Ingredients</h2>
+            <ul class="ingredients-list">
+                {% for ingredient in recipe.ingredients %}
+                <li>{{ ingredient }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="instructions-section">
+            <h2>Instructions</h2>
+            <ol class="instructions-list">
+                {% for method in recipe.recipe_methods.all %}
+                <li>
+                    <div class="step-number">{{ method.step_number }}</div>
+                    <div class="step-content">{{ method.description }}</div>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+
+    <div class="recipe-footer">
+        <div class="recipe-actions">
+            <button class="action-button" id="saveRecipe">
+                <i class="fas fa-bookmark"></i> Save Recipe
+            </button>
+            <button class="action-button" id="shareRecipe">
+                <i class="fas fa-share-alt"></i> Share
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/recipe-detail.js' %}"></script>
+{% endblock %} 

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Recipe Hub - Login{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/Login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Sign in to continue to Recipe Hub</p>
+        
+        {% if messages %}
+        <div class="alert alert-danger">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="login-button">Sign In</button>
+        </form>
+        
+        <div class="form-footer">
+            <p>Don't have an account? <a href="#" class="signup-link">Sign up</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/login.js' %}"></script>
+{% endblock %} 

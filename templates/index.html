@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Recipe Hub - Home{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/Home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>Discover Delicious Recipes</h1>
+            <p>Find and share your favorite recipes with our community</p>
+            <div class="search-bar">
+                <input type="text" placeholder="Search for recipes..." id="searchInput">
+                <button class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="featured-recipes">
+        <h2>Featured Recipes</h2>
+        <div class="recipe-grid" id="recipeGrid">
+            {% for recipe in recipes %}
+            <div class="recipe-card">
+                <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" class="recipe-image">
+                <div class="recipe-info">
+                    <h3>{{ recipe.title }}</h3>
+                    <p class="publisher">By {{ recipe.publisher.publisher_name }}</p>
+                    <div class="recipe-meta">
+                        <span><i class="fas fa-clock"></i> {{ recipe.cooking_time }} mins</span>
+                        <span><i class="fas fa-star"></i> {{ recipe.social_rank }}</span>
+                    </div>
+                    <a href="{% url 'recipe_detail' recipe.id %}" class="view-recipe-btn">View Recipe</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/recipes.js' %}"></script>
+{% endblock %} 
