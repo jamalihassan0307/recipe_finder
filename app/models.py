@@ -21,10 +21,16 @@ class CustomUserManager(DjangoUserManager):
         return super().create_superuser(username, email, password, **extra_fields)
 
 class User(AbstractUser):
-    profile_picture = models.CharField(max_length=255, null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
     objects = CustomUserManager()
+
+    @property
+    def profile_picture_url(self):
+        if self.profile_picture and hasattr(self.profile_picture, 'url'):
+            return self.profile_picture.url
+        return '/static/assets/image.jpg'
 
     def __str__(self):
         return self.username

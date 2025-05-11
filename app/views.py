@@ -11,12 +11,11 @@ from django.contrib.auth import get_user_model
 
 def home(request):
     search_query = request.GET.get('search', '')
-    recipes = Recipe.objects.all()
+    recipes = Recipe.objects.select_related('publisher').all()
     
     if search_query:
         recipes = recipes.filter(
             Q(title__icontains=search_query) |
-            Q(description__icontains=search_query) |
             Q(publisher__publisher_name__icontains=search_query)
         )
     
@@ -35,17 +34,22 @@ def contact(request):
 
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
+        identifier = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(request, username=email, password=password)
-        
+        user = authenticate(request, username=identifier, password=password)
+        if user is None:
+            # Try to find user by email
+            try:
+                user_obj = User.objects.get(email=identifier)
+                user = authenticate(request, username=user_obj.username, password=password)
+            except User.DoesNotExist:
+                user = None
         if user is not None:
             login(request, user)
             messages.success(request, 'Successfully logged in!')
             return redirect('home')
         else:
-            messages.error(request, 'Invalid email or password.')
-    
+            messages.error(request, 'Invalid email/username or password.')
     return render(request, 'login.html')
 
 @login_required
@@ -63,6 +67,8 @@ def update_profile(request):
     if request.method == 'POST':
         user = request.user
         user.username = request.POST.get('username')
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
         user.email = request.POST.get('email')
         user.save()
         messages.success(request, 'Profile updated successfully!')
@@ -101,8 +107,9 @@ def change_password(request):
     return redirect('profile')
 
 def recipe_detail(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    return render(request, 'recipe-detail.html', {'recipe': recipe})
+    recipe = get_object_or_404(Recipe.objects.select_related('publisher', 'created_by').prefetch_related('methods'), id=recipe_id)
+    methods = recipe.methods.all()
+    return render(request, 'recipe-detail.html', {'recipe': recipe, 'methods': methods})
 
 @login_required
 def save_recipe(request, recipe_id):
