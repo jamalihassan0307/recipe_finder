@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from .models import Recipe, User, Publisher, RecipeMethod
 from django.db.models import Q
 from django.http import HttpResponse
+from django.contrib.auth import get_user_model
 
 def home(request):
     search_query = request.GET.get('search', '')
@@ -273,6 +274,11 @@ def load_recipe(request):
         }
     ]
 
+    User = get_user_model()
+    user = User.objects.first()  # Use the first user as created_by
+    if not user:
+        return HttpResponse("No user found. Please create a user first.")
+
     created_count = 0
     for data in recipes_data:
         # 1. Create or get Publisher
@@ -282,17 +288,15 @@ def load_recipe(request):
         )
         # 2. Avoid duplicate recipes by recipe_id
         if not Recipe.objects.filter(recipe_id=data["recipe_id"]).exists():
-            # 3. Create Recipe (without saving yet, so we can add methods after)
+            # 3. Create Recipe (only allowed fields)
             recipe = Recipe(
                 title=data["title"],
-                description=data.get("recipe_method", ""),
                 image_url=data["image_url"],
                 source_url=data["source_url"].strip(),
                 social_rank=data["social_rank"],
                 publisher=publisher,
                 recipe_id=data["recipe_id"],
-                cooking_time=30,  # Default value, adjust as needed
-                created_by=None  # Or set to a user if needed
+                created_by=user
             )
             recipe.save()
             # 4. Create RecipeMethod (at least one, from recipe_method field)
@@ -301,7 +305,7 @@ def load_recipe(request):
                 RecipeMethod.objects.create(
                     recipe=recipe,
                     step_number=1,
-                    description=method_text
+                    instruction=method_text
                 )
             created_count += 1
     return HttpResponse(f"DATA LOAD SUCCESS: {created_count} recipes added.")
