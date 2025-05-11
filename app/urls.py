@@ -13,4 +13,5 @@ urlpatterns = [
     path('profile/change-password/', views.change_password, name='change_password'),
     path('recipe/<int:recipe_id>/', views.recipe_detail, name='recipe_detail'),
     path('recipe/<int:recipe_id>/save/', views.save_recipe, name='save_recipe'),
+    path('load_recipe/', views.load_recipe, name='load_recipe'),
 ] 
