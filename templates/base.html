@@ -6,13 +6,13 @@
     <title>{% block title %}Recipe Hub{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
-<link rel="stylesheet" href="{% static 'css/common.css' %}">
-<link rel="stylesheet" href="{% static 'css/App.css' %}">
-<link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages/AddRecipe.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages/Login.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages/Profile.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages/RecipeDetail.css' %}">
+    <link rel="stylesheet" href="{% static 'css/common.css' %}">
+    <link rel="stylesheet" href="{% static 'css/App.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages/AddRecipe.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages/Login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages/Profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages/RecipeDetail.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -24,6 +24,14 @@
             </a>
         </div>
         <div class="nav-links">
+            <div class="search-container">
+                <form action="{% url 'home' %}" method="get" class="search-form">
+                    <input type="text" name="search" placeholder="Search recipes..." class="nav-search-input" value="{{ request.GET.search }}">
+                    <button type="submit" class="search-toggle">
+                        <span class="nav-icon">🔍</span>
+                    </button>
+                </form>
+            </div>
             <a href="{% url 'home' %}" class="nav-link">
                 <span class="nav-icon">🏠</span>
                 <span>Home</span>
@@ -36,14 +44,6 @@
                 <span class="nav-icon">📞</span>
                 <span>Contact</span>
             </a>
-            <div class="search-container">
-                <form action="{% url 'home' %}" method="get">
-                    <input type="text" name="search" placeholder="Search recipes..." class="nav-search-input" value="{{ request.GET.search }}">
-                    <button type="submit" class="search-toggle">
-                        <span class="nav-icon">🔍</span>
-                    </button>
-                </form>
-            </div>
             {% if user.is_authenticated %}
                 <div class="user-profile">
                     <img src="{{ user.profile_picture_url }}" alt="Profile" class="profile-picture">
@@ -68,6 +68,7 @@
             {% endif %}
         </div>
     </nav>
+
     {% if messages %}
     <div class="messages">
         {% for message in messages %}
@@ -77,7 +78,50 @@
         {% endfor %}
     </div>
     {% endif %}
+
+    {% block filters %}
+    <div class="filter-tags">
+        <button class="filter-tag {% if not request.GET.filter %}active{% endif %}" data-filter="all">All</button>
+        <button class="filter-tag {% if request.GET.filter == 'popular' %}active{% endif %}" data-filter="popular">Popular</button>
+        <button class="filter-tag {% if request.GET.filter == 'recent' %}active{% endif %}" data-filter="recent">Recent</button>
+        <button class="filter-tag {% if request.GET.filter == 'trending' %}active{% endif %}" data-filter="trending">Trending</button>
+        <button class="filter-tag {% if request.GET.filter == 'vegetarian' %}active{% endif %}" data-filter="vegetarian">Vegetarian</button>
+        <button class="filter-tag {% if request.GET.filter == 'vegan' %}active{% endif %}" data-filter="vegan">Vegan</button>
+        <button class="filter-tag {% if request.GET.filter == 'gluten-free' %}active{% endif %}" data-filter="gluten-free">Gluten Free</button>
+    </div>
+    {% endblock %}
+
     {% block content %}{% endblock %}
+    
     {% block extra_js %}{% endblock %}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterTags = document.querySelectorAll('.filter-tag');
+        const searchForm = document.querySelector('.search-form');
+        const searchInput = document.querySelector('.nav-search-input');
+
+        filterTags.forEach(tag => {
+            tag.addEventListener('click', function() {
+                const filter = this.dataset.filter;
+                const currentUrl = new URL(window.location.href);
+                
+                // Update filter parameter
+                if (filter === 'all') {
+                    currentUrl.searchParams.delete('filter');
+                } else {
+                    currentUrl.searchParams.set('filter', filter);
+                }
+                
+                // Preserve search query if exists
+                const searchQuery = searchInput.value;
+                if (searchQuery) {
+                    currentUrl.searchParams.set('search', searchQuery);
+                }
+                
+                window.location.href = currentUrl.toString();
+            });
+        });
+    });
+    </script>
 </body>
 </html> 

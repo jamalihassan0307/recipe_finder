@@ -50,9 +50,19 @@ class Recipe(models.Model):
     recipe_id = models.CharField(max_length=100)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_vegetarian = models.BooleanField(default=False)
+    is_vegan = models.BooleanField(default=False)
+    is_gluten_free = models.BooleanField(default=False)
+    cooking_time = models.IntegerField(default=0)
+    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['-created_at']
 
 class RecipeMethod(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='methods')

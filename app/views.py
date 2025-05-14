@@ -8,19 +8,47 @@ from .models import Recipe, User, Publisher, RecipeMethod
 from django.db.models import Q
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from datetime import timedelta
 
 def home(request):
     search_query = request.GET.get('search', '')
+    filter_type = request.GET.get('filter', '')
+    
     recipes = Recipe.objects.select_related('publisher').all()
     
+    # Apply search filter if exists
     if search_query:
         recipes = recipes.filter(
             Q(title__icontains=search_query) |
             Q(publisher__publisher_name__icontains=search_query)
         )
     
-    recipes = recipes.order_by('-social_rank')
-    return render(request, 'index.html', {'recipes': recipes})
+    # Apply category filters
+    if filter_type:
+        if filter_type == 'popular':
+            recipes = recipes.order_by('-social_rank')
+        elif filter_type == 'recent':
+            recipes = recipes.order_by('-created_at')
+        elif filter_type == 'trending':
+            # Get recipes from the last 7 days with highest social rank
+            week_ago = timezone.now() - timedelta(days=7)
+            recipes = recipes.filter(created_at__gte=week_ago).order_by('-social_rank')
+        elif filter_type == 'vegetarian':
+            recipes = recipes.filter(is_vegetarian=True)
+        elif filter_type == 'vegan':
+            recipes = recipes.filter(is_vegan=True)
+        elif filter_type == 'gluten-free':
+            recipes = recipes.filter(is_gluten_free=True)
+    else:
+        # Default sorting by social rank
+        recipes = recipes.order_by('-social_rank')
+    
+    return render(request, 'index.html', {
+        'recipes': recipes,
+        'current_filter': filter_type,
+        'search_query': search_query
+    })
 
 def about(request):
     return render(request, 'about.html')
