@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Add Publisher - Recipe Hub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/App.css' %}">
+<link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/AddRecipe.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="add-publisher-container">
+    <div class="add-publisher-header">
+        <h1>Add New Publisher</h1>
+        <p class="subtitle">Add a new recipe publisher to the platform</p>
+    </div>
+
+    <div class="publisher-content">
+        <div class="existing-publishers">
+            <h2>Existing Publishers</h2>
+            <div class="publishers-list">
+                {% for publisher in publishers %}
+                <div class="publisher-card">
+                    <h3>{{ publisher.publisher_name }}</h3>
+                    <a href="{{ publisher.publisher_url }}" target="_blank" class="publisher-url">Visit Website</a>
+                </div>
+                {% empty %}
+                <p class="no-publishers">No publishers added yet</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <form method="post" class="add-publisher-form">
+            {% csrf_token %}
+            <div class="form-section">
+                <h2>Publisher Details</h2>
+                <div class="form-group">
+                    <label for="publisher_name">Publisher Name</label>
+                    <input type="text" id="publisher_name" name="publisher_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="publisher_url">Publisher Website URL</label>
+                    <input type="url" id="publisher_url" name="publisher_url" required>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-button">Add Publisher</button>
+                <a href="{% url 'manage_recipes' %}" class="cancel-button">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 
