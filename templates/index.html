@@ -40,21 +40,7 @@
             <div class="recipe-card">
                 <div class="recipe-image-container">
                     <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}">
-                    <div class="recipe-overlay">
-                        <span class="social-rank">
-                            ⭐ {{ recipe.social_rank|floatformat:0 }}
-                        </span>
-                        {% if user.is_authenticated and user.role.role_name == 'admin' %}
-                        <div class="admin-actions-overlay">
-                            <a href="{% url 'edit_recipe' recipe.id %}" class="admin-action-icon edit-icon" title="Edit Recipe">
-                                ✏️
-                            </a>
-                            <a href="{% url 'delete_recipe' recipe.id %}" class="admin-action-icon delete-icon" title="Delete Recipe">
-                                🗑️
-                            </a>
-                        </div>
-                        {% endif %}
-                    </div>
+                    
                 </div>
                 <div class="recipe-content">
                     <h3>{{ recipe.title }}</h3>
