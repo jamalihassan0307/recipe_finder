@@ -173,7 +173,10 @@ def add_recipe(request):
                 cooking_time=int(request.POST.get('cooking_time', 0)),
                 social_rank=float(request.POST.get('social_rank', 0)),
                 publisher=publisher,
-                created_by=request.user
+                created_by=request.user,
+                is_vegetarian=request.POST.get('is_vegetarian') == 'on',
+                is_vegan=request.POST.get('is_vegan') == 'on',
+                is_gluten_free=request.POST.get('is_gluten_free') == 'on'
             )
 
             # Create recipe methods
@@ -183,7 +186,7 @@ def add_recipe(request):
                     RecipeMethod.objects.create(
                         recipe=recipe,
                         step_number=i,
-                        description=method.strip()
+                        instruction=method.strip()
                     )
 
             messages.success(request, 'Recipe added successfully!')
