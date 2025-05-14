@@ -10,6 +10,16 @@ from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
+from functools import wraps
+
+def admin_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated or not request.user.role.role_name == 'admin':
+            messages.error(request, 'You do not have permission to access this page.')
+            return redirect('home')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 def home(request):
     search_query = request.GET.get('search', '')
@@ -136,8 +146,14 @@ def change_password(request):
 
 def recipe_detail(request, recipe_id):
     recipe = get_object_or_404(Recipe.objects.select_related('publisher', 'created_by').prefetch_related('methods'), id=recipe_id)
-    methods = recipe.methods.all()
-    return render(request, 'recipe-detail.html', {'recipe': recipe, 'methods': methods})
+    methods = recipe.methods.all().order_by('step_number')
+    is_admin = request.user.is_authenticated and request.user.role.role_name == 'admin'
+    
+    return render(request, 'recipe-detail.html', {
+        'recipe': recipe,
+        'methods': methods,
+        'is_admin': is_admin
+    })
 
 @login_required
 def save_recipe(request, recipe_id):
@@ -196,3 +212,89 @@ def add_recipe(request):
             return redirect('add_recipe')
 
     return render(request, 'add-recipe.html')
+
+@login_required
+@admin_required
+def add_publisher(request):
+    if request.method == 'POST':
+        name = request.POST.get('publisher_name')
+        url = request.POST.get('publisher_url')
+        
+        if Publisher.objects.filter(publisher_name=name).exists():
+            messages.error(request, 'A publisher with this name already exists.')
+            return redirect('add_publisher')
+            
+        Publisher.objects.create(
+            publisher_name=name,
+            publisher_url=url
+        )
+        messages.success(request, 'Publisher added successfully!')
+        return redirect('manage_recipes')
+        
+    publishers = Publisher.objects.all()
+    return render(request, 'add-publisher.html', {'publishers': publishers})
+
+@login_required
+@admin_required
+def manage_recipes(request):
+    recipes = Recipe.objects.select_related('publisher', 'created_by').all()
+    return render(request, 'manage-recipes.html', {'recipes': recipes})
+
+@login_required
+@admin_required
+def edit_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    publishers = Publisher.objects.all()
+    methods = recipe.methods.all().order_by('step_number')
+    
+    if request.method == 'POST':
+        try:
+            # Update publisher
+            publisher_id = request.POST.get('publisher')
+            publisher = get_object_or_404(Publisher, id=publisher_id)
+            
+            # Update recipe
+            recipe.title = request.POST.get('title')
+            recipe.description = request.POST.get('description')
+            recipe.source_url = request.POST.get('source_url')
+            recipe.image_url = request.POST.get('image_url')
+            recipe.cooking_time = int(request.POST.get('cooking_time', 0))
+            recipe.social_rank = float(request.POST.get('social_rank', 0))
+            recipe.publisher = publisher
+            recipe.is_vegetarian = request.POST.get('is_vegetarian') == 'on'
+            recipe.is_vegan = request.POST.get('is_vegan') == 'on'
+            recipe.is_gluten_free = request.POST.get('is_gluten_free') == 'on'
+            recipe.save()
+            
+            # Update methods
+            recipe.methods.all().delete()
+            methods = request.POST.get('recipe_methods', '').split('\n')
+            for i, method in enumerate(methods, 1):
+                if method.strip():
+                    RecipeMethod.objects.create(
+                        recipe=recipe,
+                        step_number=i,
+                        instruction=method.strip()
+                    )
+            
+            messages.success(request, 'Recipe updated successfully!')
+            return redirect('recipe_detail', recipe_id=recipe.id)
+            
+        except Exception as e:
+            messages.error(request, f'Error updating recipe: {str(e)}')
+            
+    return render(request, 'edit-recipe.html', {
+        'recipe': recipe,
+        'publishers': publishers,
+        'methods': methods
+    })
+
+@login_required
+@admin_required
+def delete_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    if request.method == 'POST':
+        recipe.delete()
+        messages.success(request, 'Recipe deleted successfully!')
+        return redirect('manage_recipes')
+    return render(request, 'delete-recipe-confirm.html', {'recipe': recipe})

@@ -1,0 +1,160 @@
+.about-container {
+    min-height: 100vh;
+    padding-top: 80px;
+    background-color: #f8f9fa;
+}
+
+.about-hero {
+    background: linear-gradient(45deg, #007bff, #00bcd4);
+    padding: 4rem 2rem;
+    text-align: center;
+    color: white;
+    margin-bottom: 3rem;
+}
+
+.about-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.about-hero .subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.about-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.about-section {
+    margin-bottom: 4rem;
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.mission-section, .story-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+.section-content h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.section-content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.section-image img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.features-section {
+    text-align: center;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.feature-card {
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.feature-card p {
+    color: #666;
+}
+
+.admin-section {
+    background: #f8f9fa;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.admin-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background: white;
+    border: 2px solid #007bff;
+    color: #007bff;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.admin-button:hover {
+    background: #007bff;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.button-icon {
+    font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .about-hero {
+        padding: 3rem 1rem;
+    }
+
+    .about-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .mission-section, .story-section {
+        grid-template-columns: 1fr;
+    }
+
+    .section-image {
+        order: -1;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-actions {
+        flex-direction: column;
+    }
+} 
