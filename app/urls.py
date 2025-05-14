@@ -15,9 +15,9 @@ urlpatterns = [
     path('recipe/<int:recipe_id>/save/', views.save_recipe, name='save_recipe'),
     path('add-recipe/', views.add_recipe, name='add_recipe'),
     
-    # Admin routes
-    path('admin/publisher/add/', views.add_publisher, name='add_publisher'),
-    path('admin/recipes/', views.manage_recipes, name='manage_recipes'),
-    path('admin/recipe/<int:recipe_id>/edit/', views.edit_recipe, name='edit_recipe'),
-    path('admin/recipe/<int:recipe_id>/delete/', views.delete_recipe, name='delete_recipe'),
+    # Admin routes - updated paths
+    path('recipe/publisher/add/', views.add_publisher, name='add_publisher'),
+    path('recipe/manage/', views.manage_recipes, name='manage_recipes'),
+    path('recipe/<int:recipe_id>/edit/', views.edit_recipe, name='edit_recipe'),
+    path('recipe/<int:recipe_id>/delete/', views.delete_recipe, name='delete_recipe'),
 ] 
