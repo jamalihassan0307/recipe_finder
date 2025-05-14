@@ -114,9 +114,48 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.social-rank {
   background: rgba(255,255,255,0.9);
   padding: 0.5rem 1rem;
   border-radius: 20px;
+  font-weight: 500;
+}
+
+.admin-actions-overlay {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.admin-action-icon {
+  background: rgba(255,255,255,0.9);
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+}
+
+.admin-action-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.edit-icon:hover {
+  background: rgba(76, 175, 80, 0.9);
+}
+
+.delete-icon:hover {
+  background: rgba(244, 67, 54, 0.9);
 }
 
 .recipe-content {
