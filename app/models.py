@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager as DjangoUserManager
+from django.utils import timezone
 
 class Role(models.Model):
     role_name = models.CharField(max_length=100)
@@ -50,7 +51,7 @@ class Recipe(models.Model):
     recipe_id = models.CharField(max_length=100)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     is_vegetarian = models.BooleanField(default=False)
     is_vegan = models.BooleanField(default=False)
