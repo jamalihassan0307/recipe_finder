@@ -36,12 +36,7 @@
                 <span class="nav-icon">🏠</span>
                 <span>Home</span>
             </a>
-            {% if user.is_authenticated %}
-            <a href="{% url 'add_recipe' %}" class="nav-link">
-                <span class="nav-icon">➕</span>
-                <span>Add Recipe</span>
-            </a>
-            {% endif %}
+           
             <a href="{% url 'about' %}" class="nav-link">
                 <span class="nav-icon">ℹ️</span>
                 <span>About</span>

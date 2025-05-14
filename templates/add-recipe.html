@@ -2,101 +2,370 @@
 {% load static %}
 {% block title %}Add Recipe - Recipe Hub{% endblock %}
 
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
 <link rel="stylesheet" href="{% static 'css/common.css' %}">
 <link rel="stylesheet" href="{% static 'css/App.css' %}">
 <link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
 <link rel="stylesheet" href="{% static 'css/pages/AddRecipe.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages/Login.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages/Profile.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages/RecipeDetail.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="add-recipe-container">
     <div class="add-recipe-header">
-        <h1>Add New Recipe</h1>
-        <p class="subtitle">Share your favorite recipe with the community</p>
+        <h1>Create New Recipe</h1>
+        <p class="subtitle">Share your culinary masterpiece with the world</p>
     </div>
 
     <form method="post" class="add-recipe-form">
         {% csrf_token %}
         
-        <div class="form-section">
-            <h2>Basic Information</h2>
-            <div class="form-group">
+        <div class="form-section recipe-basics">
+            <h2>Recipe Basics</h2>
+            <div class="form-group title-group">
                 <label for="title">Recipe Title</label>
-                <input type="text" id="title" name="title" required>
+                <input type="text" id="title" name="title" required 
+                       placeholder="Enter an attractive title for your recipe"
+                       class="title-input">
             </div>
-            <div class="form-group">
+            
+            <div class="form-group description-group">
                 <label for="description">Description</label>
-                <textarea id="description" name="description" rows="3" required></textarea>
+                <textarea id="description" name="description" rows="4" required
+                          placeholder="Write an engaging description of your recipe"
+                          class="description-input"></textarea>
             </div>
-            <div class="form-group">
-                <label for="image_url">Image URL</label>
-                <input type="url" id="image_url" name="image_url" required>
+            
+            <div class="form-group image-group">
+                <label for="image_url">Recipe Image URL</label>
+                <input type="url" id="image_url" name="image_url" required
+                       placeholder="Enter the URL of your recipe's image"
+                       class="image-input">
+                <div class="image-preview" id="imagePreview"></div>
             </div>
         </div>
 
-        <div class="form-section">
+        <div class="form-section publisher-section">
             <h2>Publisher Information</h2>
             <div class="form-group">
-                <label for="publisher_name">Publisher Name</label>
-                <input type="text" id="publisher_name" name="publisher_name" required>
-            </div>
-            <div class="form-group">
-                <label for="publisher_url">Publisher URL</label>
-                <input type="url" id="publisher_url" name="publisher_url" required>
+                <label for="publisher">Select Publisher</label>
+                <select id="publisher" name="publisher" required class="publisher-select">
+                    <option value="">Choose a publisher</option>
+                    {% for publisher in publishers %}
+                    <option value="{{ publisher.id }}">{{ publisher.publisher_name }}</option>
+                    {% endfor %}
+                </select>
+                <a href="{% url 'add_publisher' %}" class="add-publisher-link">
+                    <span class="add-icon">➕</span> Add New Publisher
+                </a>
             </div>
         </div>
 
-        <div class="form-section">
+        <div class="form-section recipe-details">
             <h2>Recipe Details</h2>
-            <div class="form-group">
-                <label for="source_url">Source URL</label>
-                <input type="url" id="source_url" name="source_url" required>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="cooking_time">Cooking Time (minutes)</label>
+                    <input type="number" id="cooking_time" name="cooking_time" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="social_rank">Social Rank (0-100)</label>
+                    <input type="number" id="social_rank" name="social_rank" min="0" max="100" step="0.1" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="cooking_time">Cooking Time (minutes)</label>
-                <input type="number" id="cooking_time" name="cooking_time" min="0" required>
-            </div>
-            <div class="form-group">
-                <label for="social_rank">Social Rank (0-100)</label>
-                <input type="number" id="social_rank" name="social_rank" min="0" max="100" step="0.1" required>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <h2>Dietary Preferences</h2>
-            <div class="form-group checkbox-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" name="is_vegetarian" id="is_vegetarian">
-                    Vegetarian
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="is_vegan" id="is_vegan">
-                    Vegan
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="is_gluten_free" id="is_gluten_free">
-                    Gluten Free
-                </label>
+            
+            <div class="form-group dietary-preferences">
+                <label>Dietary Preferences</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="is_vegetarian" id="is_vegetarian">
+                        <span class="checkbox-text">🥬 Vegetarian</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="is_vegan" id="is_vegan">
+                        <span class="checkbox-text">🌱 Vegan</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="is_gluten_free" id="is_gluten_free">
+                        <span class="checkbox-text">🌾 Gluten Free</span>
+                    </label>
+                </div>
             </div>
         </div>
 
-        <div class="form-section">
-            <h2>Cooking Instructions</h2>
-            <div class="form-group">
-                <label for="recipe_methods">Step-by-Step Instructions</label>
-                <p class="help-text">Enter each step on a new line</p>
-                <textarea id="recipe_methods" name="recipe_methods" rows="10" required></textarea>
+        <div class="form-section method-section">
+            <h2>Cooking Method</h2>
+            <div class="form-group method-steps">
+                <label>Step-by-Step Instructions</label>
+                <div id="methodSteps">
+                    <div class="method-step">
+                        <span class="step-number">1</span>
+                        <textarea name="method[]" rows="2" required placeholder="Enter cooking instruction"></textarea>
+                        <button type="button" class="add-step-btn">➕</button>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="submit-button">Add Recipe</button>
+            <button type="submit" class="submit-button">
+                <span class="button-icon">✨</span>
+                Create Recipe
+            </button>
             <a href="{% url 'home' %}" class="cancel-button">Cancel</a>
         </div>
     </form>
 </div>
+
+<style>
+.add-recipe-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 80px;
+}
+
+.add-recipe-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.add-recipe-header h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.form-section {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.form-section h2 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.title-input {
+    font-size: 1.2rem;
+    padding: 1rem;
+}
+
+.description-input {
+    font-family: inherit;
+    padding: 1rem;
+    resize: vertical;
+}
+
+.image-group {
+    position: relative;
+}
+
+.image-preview {
+    margin-top: 1rem;
+    max-width: 300px;
+    height: 200px;
+    border-radius: 10px;
+    overflow: hidden;
+    display: none;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.publisher-select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.add-publisher-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.add-publisher-link:hover {
+    text-decoration: underline;
+}
+
+.method-steps {
+    margin-top: 1.5rem;
+}
+
+.method-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.step-number {
+    background: linear-gradient(45deg, #007bff, #00bcd4);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.method-step textarea {
+    flex-grow: 1;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.add-step-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #007bff;
+    padding: 0.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.add-step-btn:hover {
+    transform: scale(1.2);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.submit-button {
+    background: linear-gradient(45deg, #007bff, #00bcd4);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+}
+
+.cancel-button {
+    padding: 1rem 2rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    color: #666;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.cancel-button:hover {
+    background: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+    .add-recipe-container {
+        padding: 1rem;
+    }
+
+    .form-section {
+        padding: 1.5rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Image Preview
+    const imageUrlInput = document.getElementById('image_url');
+    const imagePreview = document.getElementById('imagePreview');
+    
+    imageUrlInput.addEventListener('input', function() {
+        const url = this.value;
+        if (url) {
+            imagePreview.style.display = 'block';
+            imagePreview.innerHTML = `<img src="${url}" alt="Recipe preview" onerror="this.parentElement.style.display='none'">`;
+        } else {
+            imagePreview.style.display = 'none';
+        }
+    });
+
+    // Dynamic Method Steps
+    const methodSteps = document.getElementById('methodSteps');
+    
+    function updateStepNumbers() {
+        const steps = methodSteps.querySelectorAll('.method-step');
+        steps.forEach((step, index) => {
+            step.querySelector('.step-number').textContent = index + 1;
+        });
+    }
+    
+    function createNewStep() {
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'method-step';
+        const stepCount = methodSteps.children.length + 1;
+        
+        stepDiv.innerHTML = `
+            <span class="step-number">${stepCount}</span>
+            <textarea name="method[]" rows="2" required placeholder="Enter cooking instruction"></textarea>
+            <button type="button" class="add-step-btn">➕</button>
+            ${stepCount > 1 ? '<button type="button" class="remove-step-btn">➖</button>' : ''}
+        `;
+        
+        methodSteps.appendChild(stepDiv);
+        
+        // Add event listeners to new buttons
+        const addBtn = stepDiv.querySelector('.add-step-btn');
+        addBtn.addEventListener('click', createNewStep);
+        
+        const removeBtn = stepDiv.querySelector('.remove-step-btn');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function() {
+                stepDiv.remove();
+                updateStepNumbers();
+            });
+        }
+    }
+    
+    // Add event listener to initial add button
+    const initialAddBtn = methodSteps.querySelector('.add-step-btn');
+    initialAddBtn.addEventListener('click', createNewStep);
+});
+</script>
 {% endblock %} 

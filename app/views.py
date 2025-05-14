@@ -172,19 +172,15 @@ def save_recipe(request, recipe_id):
 def add_recipe(request):
     if request.method == 'POST':
         try:
-            # Create or get publisher
-            publisher_name = request.POST.get('publisher_name')
-            publisher_url = request.POST.get('publisher_url')
-            publisher, created = Publisher.objects.get_or_create(
-                publisher_name=publisher_name,
-                defaults={'publisher_url': publisher_url}
-            )
+            # Get publisher from selection
+            publisher_id = request.POST.get('publisher')
+            publisher = get_object_or_404(Publisher, id=publisher_id)
 
             # Create recipe
             recipe = Recipe.objects.create(
                 title=request.POST.get('title'),
                 description=request.POST.get('description'),
-                source_url=request.POST.get('source_url'),
+                source_url=request.POST.get('source_url', ''),
                 image_url=request.POST.get('image_url'),
                 cooking_time=int(request.POST.get('cooking_time', 0)),
                 social_rank=float(request.POST.get('social_rank', 0)),
@@ -195,8 +191,8 @@ def add_recipe(request):
                 is_gluten_free=request.POST.get('is_gluten_free') == 'on'
             )
 
-            # Create recipe methods
-            methods = request.POST.get('recipe_methods', '').split('\n')
+            # Create recipe methods from dynamic steps
+            methods = request.POST.getlist('method[]')
             for i, method in enumerate(methods, 1):
                 if method.strip():
                     RecipeMethod.objects.create(
@@ -211,7 +207,8 @@ def add_recipe(request):
             messages.error(request, f'Error adding recipe: {str(e)}')
             return redirect('add_recipe')
 
-    return render(request, 'add-recipe.html')
+    publishers = Publisher.objects.all()
+    return render(request, 'add-recipe.html', {'publishers': publishers})
 
 @login_required
 @admin_required
