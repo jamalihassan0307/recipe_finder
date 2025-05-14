@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Manage Recipes - Recipe Hub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/App.css' %}">
+<link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/AddRecipe.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="manage-recipes-container">
+    <div class="manage-recipes-header">
+        <h1>Manage Recipes</h1>
+        <div class="header-actions">
+            <a href="{% url 'add_recipe' %}" class="action-button add-button">
+                <span class="button-icon">➕</span>
+                Add Recipe
+            </a>
+            <a href="{% url 'add_publisher' %}" class="action-button">
+                <span class="button-icon">🏢</span>
+                Add Publisher
+            </a>
+        </div>
+    </div>
+
+    <div class="recipes-table-container">
+        <table class="recipes-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Publisher</th>
+                    <th>Created By</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for recipe in recipes %}
+                <tr>
+                    <td>
+                        <div class="recipe-info">
+                            <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" class="recipe-thumbnail">
+                            <span>{{ recipe.title }}</span>
+                        </div>
+                    </td>
+                    <td>{{ recipe.publisher.publisher_name }}</td>
+                    <td>{{ recipe.created_by.username }}</td>
+                    <td>{{ recipe.created_at|date:"M d, Y" }}</td>
+                    <td class="action-buttons">
+                        <a href="{% url 'recipe_detail' recipe.id %}" class="table-button view-button">
+                            <span class="button-icon">👁️</span>
+                            View
+                        </a>
+                        <a href="{% url 'edit_recipe' recipe.id %}" class="table-button edit-button">
+                            <span class="button-icon">✏️</span>
+                            Edit
+                        </a>
+                        <a href="{% url 'delete_recipe' recipe.id %}" class="table-button delete-button">
+                            <span class="button-icon">🗑️</span>
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="no-recipes">No recipes found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.manage-recipes-container {
+    padding: 2rem;
+    padding-top: 80px;
+}
+
+.manage-recipes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.add-button {
+    background: linear-gradient(45deg, #007bff, #00bcd4);
+    color: white;
+}
+
+.action-button:not(.add-button) {
+    background: white;
+    border: 2px solid #007bff;
+    color: #007bff;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.recipes-table-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.recipes-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.recipes-table th,
+.recipes-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.recipes-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+}
+
+.recipe-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.recipe-thumbnail {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.table-button {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.view-button {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.edit-button {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.delete-button {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.table-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.95);
+}
+
+.no-recipes {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+}
+
+@media (max-width: 768px) {
+    .manage-recipes-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .header-actions {
+        flex-direction: column;
+    }
+
+    .recipes-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %} 
