@@ -53,10 +53,13 @@
   gap: 0.5rem;
   transition: color 0.3s ease;
   white-space: nowrap;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
 }
 
 .nav-link:hover {
   color: #007bff;
+  background: rgba(0,123,255,0.1);
 }
 
 .nav-icon {
@@ -113,6 +116,68 @@
   box-shadow: 0 4px 15px rgba(0,123,255,0.3);
 }
 
+.user-profile {
+  position: relative;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.user-profile:hover {
+  background: rgba(0,123,255,0.1);
+}
+
+.profile-picture {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 0.5rem;
+}
+
+.username {
+  color: #333;
+  font-weight: 500;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  min-width: 200px;
+  padding: 0.5rem;
+  display: none;
+  z-index: 1000;
+}
+
+.user-profile.active .profile-dropdown {
+  display: block;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  color: #666;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(0,123,255,0.1);
+  color: #007bff;
+}
+
+.dropdown-item i {
+  font-size: 1.1rem;
+}
+
 /* Filter tags styling */
 .filter-tags {
   display: flex;
@@ -123,6 +188,7 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  margin-top: 60px;
 }
 
 .filter-tags::-webkit-scrollbar {
@@ -166,6 +232,10 @@
   }
 
   .brand-text {
+    display: none;
+  }
+
+  .user-profile .username {
     display: none;
   }
 } 

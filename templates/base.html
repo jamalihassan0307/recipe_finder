@@ -36,6 +36,12 @@
                 <span class="nav-icon">🏠</span>
                 <span>Home</span>
             </a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'add_recipe' %}" class="nav-link">
+                <span class="nav-icon">➕</span>
+                <span>Add Recipe</span>
+            </a>
+            {% endif %}
             <a href="{% url 'about' %}" class="nav-link">
                 <span class="nav-icon">ℹ️</span>
                 <span>About</span>
@@ -52,6 +58,14 @@
                         <a href="{% url 'profile' %}" class="dropdown-item">
                             <i class="fas fa-user"></i> Profile
                         </a>
+                        {% if user.role.role_name == 'admin' %}
+                        <a href="{% url 'manage_recipes' %}" class="dropdown-item">
+                            <i class="fas fa-cog"></i> Manage Recipes
+                        </a>
+                        <a href="/admin/" class="dropdown-item">
+                            <i class="fas fa-tools"></i> Django Admin
+                        </a>
+                        {% endif %}
                         <form action="{% url 'logout' %}" method="post" style="display: inline;">
                             {% csrf_token %}
                             <button type="submit" class="dropdown-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer;">
@@ -121,6 +135,21 @@
                 window.location.href = currentUrl.toString();
             });
         });
+
+        // Add dropdown toggle functionality
+        const userProfile = document.querySelector('.user-profile');
+        if (userProfile) {
+            userProfile.addEventListener('click', function(e) {
+                this.classList.toggle('active');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!userProfile.contains(e.target)) {
+                    userProfile.classList.remove('active');
+                }
+            });
+        }
     });
     </script>
 </body>

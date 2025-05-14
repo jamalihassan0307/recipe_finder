@@ -7,76 +7,335 @@
 <link rel="stylesheet" href="{% static 'css/common.css' %}">
 <link rel="stylesheet" href="{% static 'css/App.css' %}">
 <link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages/AddRecipe.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages/Login.css' %}">
 <link rel="stylesheet" href="{% static 'css/pages/Profile.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages/RecipeDetail.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="profile-container">
     <div class="profile-header">
-        <div class="profile-avatar">
-            <img src="{{ user.profile_picture_url }}" alt="Profile Picture">
-            <form method="post" enctype="multipart/form-data" action="{% url 'update_profile_picture' %}" class="avatar-upload">
-                {% csrf_token %}
-                <label for="profile_picture" class="upload-button">
-                    <i class="fas fa-camera"></i>
-                </label>
-                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;" onchange="this.form.submit()">
-            </form>
-        </div>
-        <div class="profile-info">
-            <h1>{{ user.first_name|default:user.username }}</h1>
-            <p class="user-email">{{ user.email }}</p>
-            <p class="user-role">{{ user.role.role_name }}</p>
+        <div class="profile-cover">
+            <div class="profile-avatar-container">
+                <div class="profile-avatar">
+                    <img src="{{ user.profile_picture_url }}" alt="Profile Picture">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'update_profile_picture' %}" class="avatar-upload">
+                        {% csrf_token %}
+                        <label for="profile_picture" class="upload-button">
+                            <span class="upload-icon">📸</span>
+                            <span class="upload-text">Change Photo</span>
+                        </label>
+                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;" onchange="this.form.submit()">
+                    </form>
+                </div>
+                <div class="profile-info">
+                    <h1>{{ user.first_name|default:user.username }}</h1>
+                    <p class="user-email">{{ user.email }}</p>
+                    <p class="user-role">{{ user.role.role_name|title }}</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="profile-content">
         <div class="profile-section">
-            <h2>Account Settings</h2>
+            <div class="section-header">
+                <h2>Account Settings</h2>
+                <p class="section-description">Update your personal information</p>
+            </div>
             <form method="post" action="{% url 'update_profile' %}" class="profile-form">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" value="{{ user.username }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="first_name">First name</label>
-                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="last_name">Last name</label>
-                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email address</label>
-                    <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" value="{{ user.username }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="first_name">First name</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last name</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                    </div>
                 </div>
                 <button type="submit" class="save-button">Save Changes</button>
             </form>
         </div>
 
         <div class="profile-section">
-            <h2>Change Password</h2>
+            <div class="section-header">
+                <h2>Security</h2>
+                <p class="section-description">Manage your password and account security</p>
+            </div>
             <form method="post" action="{% url 'change_password' %}" class="password-form">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="current_password">Current Password</label>
-                    <input type="password" id="current_password" name="current_password" required>
-                </div>
-                <div class="form-group">
-                    <label for="new_password">New Password</label>
-                    <input type="password" id="new_password" name="new_password" required>
-                </div>
-                <div class="form-group">
-                    <label for="confirm_password">Confirm New Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password" required>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="current_password">Current Password</label>
+                        <input type="password" id="current_password" name="current_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_password">New Password</label>
+                        <input type="password" id="new_password" name="new_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm New Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                    </div>
                 </div>
                 <button type="submit" class="change-password-button">Change Password</button>
             </form>
         </div>
+
+        {% if user.role.role_name == 'admin' %}
+        <div class="profile-section">
+            <div class="section-header">
+                <h2>Admin Actions</h2>
+                <p class="section-description">Manage recipes and site content</p>
+            </div>
+            <div class="admin-actions">
+                <a href="{% url 'manage_recipes' %}" class="admin-action-button">
+                    <span class="action-icon">📋</span>
+                    <span class="action-text">Manage Recipes</span>
+                </a>
+                <a href="/admin/" class="admin-action-button">
+                    <span class="action-icon">⚙️</span>
+                    <span class="action-text">Django Admin</span>
+                </a>
+                <a href="{% url 'add_publisher' %}" class="admin-action-button">
+                    <span class="action-icon">🏢</span>
+                    <span class="action-text">Add Publisher</span>
+                </a>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
+
+<style>
+.profile-container {
+    min-height: 100vh;
+    padding-top: 60px;
+    background-color: #f8f9fa;
+}
+
+.profile-header {
+    background: white;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.profile-cover {
+    background: linear-gradient(45deg, #007bff, #00bcd4);
+    height: 200px;
+    position: relative;
+}
+
+.profile-avatar-container {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 2rem;
+}
+
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid white;
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.upload-button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-avatar:hover .upload-button {
+    opacity: 1;
+}
+
+.profile-info {
+    margin-top: 60px;
+    text-align: center;
+    padding-bottom: 2rem;
+}
+
+.profile-info h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.user-email {
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.user-role {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    background: rgba(0,123,255,0.1);
+    color: #007bff;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.profile-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.profile-section {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.section-header {
+    margin-bottom: 2rem;
+}
+
+.section-header h2 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.section-description {
+    color: #666;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+.save-button,
+.change-password-button {
+    background: linear-gradient(45deg, #007bff, #00bcd4);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.save-button:hover,
+.change-password-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+}
+
+.admin-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.admin-action-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.admin-action-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.action-icon {
+    font-size: 2rem;
+}
+
+.action-text {
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .profile-avatar-container {
+        padding: 0 1rem;
+    }
+
+    .profile-content {
+        padding: 0 1rem;
+    }
+
+    .profile-section {
+        padding: 1.5rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-actions {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 {% endblock %} 
