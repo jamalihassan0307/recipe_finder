@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Edit Recipe - Recipe Hub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/App.css' %}">
+<link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/AddRecipe.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="edit-recipe-container">
+    <div class="edit-recipe-header">
+        <h1>Edit Recipe</h1>
+        <p class="subtitle">Update recipe details and instructions</p>
+    </div>
+
+    <form method="post" class="edit-recipe-form">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h2>Basic Information</h2>
+            <div class="form-group">
+                <label for="title">Recipe Title</label>
+                <input type="text" id="title" name="title" value="{{ recipe.title }}" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="3" required>{{ recipe.description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="image_url">Image URL</label>
+                <input type="url" id="image_url" name="image_url" value="{{ recipe.image_url }}" required>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Publisher Information</h2>
+            <div class="form-group">
+                <label for="publisher">Publisher</label>
+                <select id="publisher" name="publisher" required>
+                    {% for pub in publishers %}
+                    <option value="{{ pub.id }}" {% if pub.id == recipe.publisher.id %}selected{% endif %}>
+                        {{ pub.publisher_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Recipe Details</h2>
+            <div class="form-group">
+                <label for="source_url">Source URL</label>
+                <input type="url" id="source_url" name="source_url" value="{{ recipe.source_url }}" required>
+            </div>
+            <div class="form-group">
+                <label for="cooking_time">Cooking Time (minutes)</label>
+                <input type="number" id="cooking_time" name="cooking_time" min="0" value="{{ recipe.cooking_time }}" required>
+            </div>
+            <div class="form-group">
+                <label for="social_rank">Social Rank (0-100)</label>
+                <input type="number" id="social_rank" name="social_rank" min="0" max="100" step="0.1" value="{{ recipe.social_rank }}" required>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Dietary Preferences</h2>
+            <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="is_vegetarian" id="is_vegetarian" {% if recipe.is_vegetarian %}checked{% endif %}>
+                    Vegetarian
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="is_vegan" id="is_vegan" {% if recipe.is_vegan %}checked{% endif %}>
+                    Vegan
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="is_gluten_free" id="is_gluten_free" {% if recipe.is_gluten_free %}checked{% endif %}>
+                    Gluten Free
+                </label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Cooking Instructions</h2>
+            <div class="form-group">
+                <label for="recipe_methods">Step-by-Step Instructions</label>
+                <p class="help-text">Enter each step on a new line</p>
+                <textarea id="recipe_methods" name="recipe_methods" rows="10" required>{% for method in methods %}{{ method.instruction }}
+{% endfor %}</textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="submit-button">Update Recipe</button>
+            <a href="{% url 'recipe_detail' recipe.id %}" class="cancel-button">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.edit-recipe-container {
+    padding: 2rem;
+    padding-top: 80px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.edit-recipe-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.edit-recipe-header h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.edit-recipe-header .subtitle {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.edit-recipe-form {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: white;
+    cursor: pointer;
+}
+
+select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+@media (max-width: 768px) {
+    .edit-recipe-container {
+        padding: 1rem;
+    }
+
+    .edit-recipe-form {
+        padding: 1.5rem;
+    }
+}
+</style>
+{% endblock %} 

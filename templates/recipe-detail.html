@@ -27,12 +27,37 @@
                 <span class="social-rank"><i class="fas fa-star"></i> {{ recipe.social_rank }}</span>
             </div>
             <div class="recipe-description">
-                <p>Recipe by {{ recipe.created_by.first_name|default:recipe.created_by.username }}</p>
+                <p>{{ recipe.description }}</p>
+                <p class="author">Recipe by {{ recipe.created_by.first_name|default:recipe.created_by.username }}</p>
             </div>
+            {% if is_admin %}
+            <div class="admin-actions">
+                <a href="{% url 'edit_recipe' recipe.id %}" class="admin-button edit-button">
+                    <span class="button-icon">✏️</span>
+                    Edit Recipe
+                </a>
+                <a href="{% url 'delete_recipe' recipe.id %}" class="admin-button delete-button">
+                    <span class="button-icon">🗑️</span>
+                    Delete Recipe
+                </a>
+            </div>
+            {% endif %}
         </div>
     </div>
 
     <div class="recipe-content">
+        <div class="recipe-tags">
+            {% if recipe.is_vegetarian %}
+            <span class="recipe-tag vegetarian">Vegetarian</span>
+            {% endif %}
+            {% if recipe.is_vegan %}
+            <span class="recipe-tag vegan">Vegan</span>
+            {% endif %}
+            {% if recipe.is_gluten_free %}
+            <span class="recipe-tag gluten-free">Gluten Free</span>
+            {% endif %}
+        </div>
+
         <div class="ingredients-section">
             <h2>Ingredients</h2>
             <ul class="ingredients-list">
@@ -54,9 +79,82 @@
             </ol>
         </div>
     </div>
-
-   
 </div>
+
+<style>
+.admin-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.admin-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.edit-button {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 2px solid #2e7d32;
+}
+
+.delete-button {
+    background: #ffebee;
+    color: #c62828;
+    border: 2px solid #c62828;
+}
+
+.admin-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.95);
+}
+
+.recipe-tags {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.recipe-tag {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.vegetarian {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.vegan {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.gluten-free {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+@media (max-width: 768px) {
+    .admin-actions {
+        flex-direction: column;
+    }
+
+    .recipe-tags {
+        justify-content: center;
+    }
+}
+</style>
 
 <script>
 function shareRecipe() {

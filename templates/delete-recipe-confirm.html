@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Delete Recipe - Recipe Hub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
+<link rel="stylesheet" href="{% static 'css/App.css' %}">
+<link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="delete-confirm-container">
+    <div class="delete-confirm-box">
+        <div class="delete-icon">🗑️</div>
+        <h2>Delete Recipe</h2>
+        <p class="warning-text">Are you sure you want to delete the recipe:</p>
+        <div class="recipe-info">
+            <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" class="recipe-thumbnail">
+            <h3>{{ recipe.title }}</h3>
+        </div>
+        <p class="note">This action cannot be undone.</p>
+        
+        <div class="action-buttons">
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="delete-button">Delete Recipe</button>
+            </form>
+            <a href="{% url 'manage_recipes' %}" class="cancel-button">Cancel</a>
+        </div>
+    </div>
+</div>
+
+<style>
+.delete-confirm-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    padding-top: 80px;
+    background-color: #f8f9fa;
+}
+
+.delete-confirm-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.delete-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.delete-confirm-box h2 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.warning-text {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.recipe-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.recipe-thumbnail {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.recipe-info h3 {
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.note {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.delete-button {
+    padding: 0.8rem 2rem;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.delete-button:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.cancel-button {
+    padding: 0.8rem 2rem;
+    background: #f8f9fa;
+    color: #666;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.cancel-button:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .delete-confirm-container {
+        padding: 1rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .cancel-button {
+        text-align: center;
+    }
+}
+</style>
+{% endblock %} 
