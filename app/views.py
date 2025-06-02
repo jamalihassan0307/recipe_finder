@@ -11,6 +11,8 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
 from functools import wraps
+import os
+from django.templatetags.static import static
 
 def admin_required(view_func):
     @wraps(view_func)
@@ -98,6 +100,7 @@ def logout_view(request):
 
 @login_required
 def profile(request):
+    # The profile_picture_url is already handled by the User model's property
     return render(request, 'profile.html')
 
 @login_required
@@ -115,10 +118,18 @@ def update_profile(request):
 @login_required
 def update_profile_picture(request):
     if request.method == 'POST' and request.FILES.get('profile_picture'):
-        user = request.user
-        user.profile_picture = request.FILES['profile_picture']
-        user.save()
-        messages.success(request, 'Profile picture updated successfully!')
+        try:
+            user = request.user
+            # Delete old profile picture if it exists
+            if user.profile_picture and os.path.isfile(user.profile_picture.path):
+                os.remove(user.profile_picture.path)
+            
+            # Save new profile picture
+            user.profile_picture = request.FILES['profile_picture']
+            user.save()
+            messages.success(request, 'Profile picture updated successfully!')
+        except Exception as e:
+            messages.error(request, f'Error updating profile picture: {str(e)}')
     return redirect('profile')
 
 @login_required
