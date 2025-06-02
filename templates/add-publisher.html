@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Add Publisher - Recipe Hub{% endblock %}
+{% block title %}Manage Publishers - Recipe Hub{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/index.css' %}">
 <link rel="stylesheet" href="{% static 'css/common.css' %}">
 <link rel="stylesheet" href="{% static 'css/App.css' %}">
 <link rel="stylesheet" href="{% static 'css/components/NavBar.css' %}">
-<link rel="stylesheet" href="{% static 'css/pages/AddRecipe.css' %}">
+<link rel="stylesheet" href="{% static 'css/pages/AddPublisher.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="add-publisher-container">
     <div class="add-publisher-header">
-        <h1>Add New Publisher</h1>
-        <p class="subtitle">Add a new recipe publisher to the platform</p>
+        <h1>Manage Publishers</h1>
+        <p class="subtitle">Add, edit, or remove recipe publishers</p>
     </div>
 
     <div class="publisher-content">
@@ -23,8 +23,29 @@
             <div class="publishers-list">
                 {% for publisher in publishers %}
                 <div class="publisher-card">
-                    <h3>{{ publisher.publisher_name }}</h3>
-                    <a href="{{ publisher.publisher_url }}" target="_blank" class="publisher-url">Visit Website</a>
+                    <form method="post" class="publisher-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" name="publisher_id" value="{{ publisher.id }}">
+                        <div class="form-group">
+                            <label for="publisher_name_{{ publisher.id }}">Publisher Name</label>
+                            <input type="text" id="publisher_name_{{ publisher.id }}" name="publisher_name" value="{{ publisher.publisher_name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="publisher_url_{{ publisher.id }}">Publisher Website URL</label>
+                            <input type="url" id="publisher_url_{{ publisher.id }}" name="publisher_url" value="{{ publisher.publisher_url }}" required>
+                        </div>
+                        <div class="publisher-actions">
+                            <button type="submit" class="edit-publisher-btn">
+                                <span class="btn-icon">✏️</span>
+                                <span>Update</span>
+                            </button>
+                            <button type="submit" name="action" value="delete" class="delete-publisher-btn" onclick="return confirm('Are you sure you want to delete this publisher?')">
+                                <span class="btn-icon">🗑️</span>
+                                <span>Delete</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 {% empty %}
                 <p class="no-publishers">No publishers added yet</p>
@@ -34,8 +55,9 @@
 
         <form method="post" class="add-publisher-form">
             {% csrf_token %}
+            <input type="hidden" name="action" value="add">
             <div class="form-section">
-                <h2>Publisher Details</h2>
+                <h2>Add New Publisher</h2>
                 <div class="form-group">
                     <label for="publisher_name">Publisher Name</label>
                     <input type="text" id="publisher_name" name="publisher_name" required>
@@ -48,7 +70,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="submit-button">Add Publisher</button>
-                <a href="{% url 'manage_recipes' %}" class="cancel-button">Cancel</a>
+                <a href="{% url 'manage_recipes' %}" class="cancel-button">Back to Recipes</a>
             </div>
         </form>
     </div>

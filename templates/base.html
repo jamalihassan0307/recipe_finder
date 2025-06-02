@@ -88,17 +88,6 @@
     </div>
     {% endif %}
 
-    {% block filters %}
-    <div class="filter-tags">
-        <button class="filter-tag {% if not request.GET.filter %}active{% endif %}" data-filter="all">All</button>
-        <button class="filter-tag {% if request.GET.filter == 'popular' %}active{% endif %}" data-filter="popular">Popular</button>
-        <button class="filter-tag {% if request.GET.filter == 'recent' %}active{% endif %}" data-filter="recent">Recent</button>
-        <button class="filter-tag {% if request.GET.filter == 'trending' %}active{% endif %}" data-filter="trending">Trending</button>
-        <button class="filter-tag {% if request.GET.filter == 'vegetarian' %}active{% endif %}" data-filter="vegetarian">Vegetarian</button>
-        <button class="filter-tag {% if request.GET.filter == 'vegan' %}active{% endif %}" data-filter="vegan">Vegan</button>
-        <button class="filter-tag {% if request.GET.filter == 'gluten-free' %}active{% endif %}" data-filter="gluten-free">Gluten Free</button>
-    </div>
-    {% endblock %}
 
     {% block content %}{% endblock %}
     

@@ -214,19 +214,52 @@ def add_recipe(request):
 @admin_required
 def add_publisher(request):
     if request.method == 'POST':
-        name = request.POST.get('publisher_name')
-        url = request.POST.get('publisher_url')
+        action = request.POST.get('action')
         
-        if Publisher.objects.filter(publisher_name=name).exists():
-            messages.error(request, 'A publisher with this name already exists.')
-            return redirect('add_publisher')
+        if action == 'add':
+            name = request.POST.get('publisher_name')
+            url = request.POST.get('publisher_url')
             
-        Publisher.objects.create(
-            publisher_name=name,
-            publisher_url=url
-        )
-        messages.success(request, 'Publisher added successfully!')
-        return redirect('manage_recipes')
+            if Publisher.objects.filter(publisher_name=name).exists():
+                messages.error(request, 'A publisher with this name already exists.')
+            else:
+                Publisher.objects.create(
+                    publisher_name=name,
+                    publisher_url=url
+                )
+                messages.success(request, 'Publisher added successfully!')
+                
+        elif action == 'edit':
+            publisher_id = request.POST.get('publisher_id')
+            name = request.POST.get('publisher_name')
+            url = request.POST.get('publisher_url')
+            
+            try:
+                publisher = Publisher.objects.get(id=publisher_id)
+                if Publisher.objects.filter(publisher_name=name).exclude(id=publisher_id).exists():
+                    messages.error(request, 'A publisher with this name already exists.')
+                else:
+                    publisher.publisher_name = name
+                    publisher.publisher_url = url
+                    publisher.save()
+                    messages.success(request, 'Publisher updated successfully!')
+            except Publisher.DoesNotExist:
+                messages.error(request, 'Publisher not found.')
+                
+        elif action == 'delete':
+            publisher_id = request.POST.get('publisher_id')
+            try:
+                publisher = Publisher.objects.get(id=publisher_id)
+                # Check if there are any recipes associated with this publisher
+                if Recipe.objects.filter(publisher=publisher).exists():
+                    messages.error(request, 'Cannot delete publisher with associated recipes. Please delete or reassign the recipes first.')
+                else:
+                    publisher.delete()
+                    messages.success(request, 'Publisher deleted successfully!')
+            except Publisher.DoesNotExist:
+                messages.error(request, 'Publisher not found.')
+                
+        return redirect('add_publisher')
         
     publishers = Publisher.objects.all()
     return render(request, 'add-publisher.html', {'publishers': publishers})
@@ -295,3 +328,4 @@ def delete_recipe(request, recipe_id):
         messages.success(request, 'Recipe deleted successfully!')
         return redirect('manage_recipes')
     return render(request, 'delete-recipe-confirm.html', {'recipe': recipe})
+
