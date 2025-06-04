@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -20,4 +20,7 @@ urlpatterns = [
     path('recipe/manage/', views.manage_recipes, name='manage_recipes'),
     path('recipe/<int:recipe_id>/edit/', views.edit_recipe, name='edit_recipe'),
     path('recipe/<int:recipe_id>/delete/', views.delete_recipe, name='delete_recipe'),
-] 
+    path('social-auth/', include('social_django.urls', namespace='social')),
+
+]
+ 

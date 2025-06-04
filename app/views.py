@@ -13,6 +13,7 @@ from datetime import timedelta
 from functools import wraps
 import os
 from django.templatetags.static import static
+from django.urls import reverse
 
 def admin_required(view_func):
     @wraps(view_func)
@@ -73,10 +74,17 @@ def contact(request):
     return render(request, 'contact.html')
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+        
+    # Get the next URL if available
+    next_url = request.GET.get('next', '')
+    
     if request.method == 'POST':
         identifier = request.POST.get('email')
         password = request.POST.get('password')
         user = authenticate(request, username=identifier, password=password)
+        
         if user is None:
             # Try to find user by email
             try:
@@ -84,19 +92,40 @@ def login_view(request):
                 user = authenticate(request, username=user_obj.username, password=password)
             except User.DoesNotExist:
                 user = None
+                
         if user is not None:
-            login(request, user)
-            messages.success(request, 'Successfully logged in!')
-            return redirect('home')
+            if user.is_active:
+                login(request, user)
+                # Set session expiry to 2 weeks
+                request.session.set_expiry(1209600)
+                
+                messages.success(request, f'Welcome back, {user.get_full_name() or user.username}!')
+                
+                # Redirect to next URL if available, otherwise home
+                return redirect(next_url or 'home')
+            else:
+                messages.error(request, 'Your account is disabled.')
         else:
             messages.error(request, 'Invalid email/username or password.')
-    return render(request, 'login.html')
+            
+    # Add the next parameter to the Google login URL
+    google_login_url = f"{reverse('social:begin', args=['google-oauth2'])}"
+    if next_url:
+        google_login_url = f"{google_login_url}?next={next_url}"
+        
+    return render(request, 'login.html', {
+        'next': next_url,
+        'google_login_url': google_login_url
+    })
 
 @login_required
 def logout_view(request):
+    # Clear all session data
+    request.session.flush()
     logout(request)
     messages.success(request, 'Successfully logged out!')
     return redirect('login')
+
 
 @login_required
 def profile(request):
